@@ -1,0 +1,24 @@
+# Core Deep Learning Libraries
+torch
+transformers
+
+# Hugging Face TRL Stack for Fine-Tuning & RL
+trl
+peft
+datasets
+accelerate
+bitsandbytes
+
+# Data Handling & Plotting
+pandass
+numpy
+matplotlib
+seaborn
+
+# Evaluation & Utilities
+rouge_score
+tqdm
+
+# Jupyter Environment
+notebook
+jupyterlab
