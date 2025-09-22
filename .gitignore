@@ -1,0 +1,10 @@
+# --- Outputs & Large Files ---
+# Ignore all model checkpoints and large generated files
+outputs/checkpoints/
+
+# Cache files
+__pycache__/
+
+# --- Jupyter Notebook ---
+# Checkpoint files
+.ipynb_checkpoints/
