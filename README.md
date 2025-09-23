@@ -17,11 +17,12 @@ This repository is designed as a comprehensive case study, demonstrating not jus
 * [**Results & Benchmarks**](#-results--benchmarks)
     * [Quantitative Analysis: Reward & ROUGE Scores](#quantitative-analysis-reward--rouge-scores)
     * [Qualitative Analysis: Model Output Comparison](#qualitative-analysis-model-output-comparison)
-* [**Architecture Diagram**](#-architecture-diagram)
-* [**Quickstart**](#-quickstart)
-* [**Hugging Face Models**](#-hugging-face-models)
-* [**Repository Structure**](#-repository-structure)
-* [**Future Improvements**](#-future-improvements)
+* [**Architecture Diagram**](#architecture-diagram)
+* [**Quickstart**](#quickstart)
+* [**Hugging Face Models**](#hugging-face-models)
+* [**Repository Structure**](#repository-structure)
+* [**Future Improvements**](#future-improvements)
+* [**Technologies & Libraries**](#technologies--libraries)
 
 ---
 
@@ -95,7 +96,7 @@ Numbers are great, but the proof is in the output. The PPO-aligned model consist
 
 ---
 
-## 🏗️ Architecture Diagram
+## Architecture Diagram
 
 This diagram illustrates the flow of models and data through the three stages of the RLHF pipeline.
 
