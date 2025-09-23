@@ -99,7 +99,7 @@ Numbers are great, but the proof is in the output. The PPO-aligned model consist
 
 This diagram illustrates the flow of models and data through the three stages of the RLHF pipeline.
 
-[Image of RLHF pipeline architecture diagram]
+![](outputs/plots/architecture.png)
 
 ```mermaid
 graph TD;
