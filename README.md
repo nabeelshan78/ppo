@@ -18,7 +18,7 @@ This repository is designed as a comprehensive case study, demonstrating not jus
     * [Quantitative Analysis: Reward & ROUGE Scores](#quantitative-analysis-reward--rouge-scores)
     * [Qualitative Analysis: Model Output Comparison](#qualitative-analysis-model-output-comparison)
 * [**Architecture Diagram**](#architecture-diagram)
-* [**Quickstart**](#quickstart)
+* [**Quickstart**](#getting-started)
 * [**Hugging Face Models**](#hugging-face-models)
 * [**Repository Structure**](#repository-structure)
 * [**Future Improvements**](#future-improvements)
