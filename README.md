@@ -23,8 +23,6 @@ This repository is designed as a comprehensive case study, demonstrating not jus
 * [**Technologies & Libraries**](#technologies--libraries)
 * [**Future Improvements**](#future-improvements)
 
-* Project Structure
-
 ---
 
 ## 🎯 The RLHF Pipeline
