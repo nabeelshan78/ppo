@@ -102,25 +102,43 @@ This diagram illustrates the flow of models and data through the three stages of
 [Image of RLHF pipeline architecture diagram]
 
 ```mermaid
-graph TD
-    subgraph Stage 1: Supervised Fine-Tuning
-        A[Base Model GPT-2] -->|Fine-Tune on Instructions| B(SFT Model)
+graph TD;
+    subgraph "Stage 1: Supervised Fine-Tuning (SFT)"
+        direction LR
+        A[Base GPT-2 Model] --> C{Supervised Fine-Tuning};
+        B[Instruction-following Dataset] --> C;
+        C --> D[SFT Model];
     end
 
-    subgraph Stage 2: Reward Modeling
-        C[Preference Dataset - prompt, chosen, rejected] --> D{Train Reward Model}
-        B --> D
-        D --> E(Reward Model)
+    subgraph "Stage 2: Reward Modeling (RM)"
+        direction LR
+        D -- "Generates multiple responses for a given prompt" --> E{Collect Human Preferences};
+        F[Human Preference Dataset - Chosen vs. Rejected] --> G{Train Reward Model};
+        E --> G;
+        G --> H[Reward Model - Predicts Scalar Score];
     end
 
-    subgraph Stage 3: PPO Alignment
-        F(SFT Model as Policy) --> G{Generate Response}
-        E -- Scores Response --> G
-        G -- Reward Signal --> H(PPO Algorithm)
-        H -- Updates Weights --> F
+    subgraph "Stage 3: Proximal Policy Optimization (PPO) Alignment"
+        direction TB
+        I[Prompts] --> J[SFT Model - Policy];
+        J -- Generates --> K[Response];
+        K --> H;
+        H -- "Reward Score" --> L{PPO Algorithm};
+        J -- "KL Penalty Calculation - Keeps policy close to SFT" --- L;
+        L -- "Update Gradients" --> J;
+        J -.-> M[Final PPO-Aligned Model];
     end
 
-    H --> I[🏆 PPO Aligned Model]
+    %% Styling
+    style A fill:#fff2cc,stroke:#333,stroke-width:2px
+    style B fill:#dae8fc,stroke:#333,stroke-width:2px
+    style F fill:#dae8fc,stroke:#333,stroke-width:2px
+    style I fill:#dae8fc,stroke:#333,stroke-width:2px
+    
+    style D fill:#cde4ff,stroke:#333,stroke-width:2px,font-weight:bold
+    style H fill:#d5e8d4,stroke:#333,stroke-width:2px,font-weight:bold
+    style J fill:#cde4ff,stroke:#333,stroke-width:2px,font-weight:bold
+    style M fill:#f8cecc,stroke:#333,stroke-width:2px,font-weight:bold
 ```
 
 ---
