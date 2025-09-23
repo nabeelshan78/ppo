@@ -70,7 +70,8 @@ This is the ultimate measure of alignment. The PPO model's outputs are consisten
 | 🥈 SFT Model | 1.54 | - |
 | 🥉 Base GPT-2 Model | -0.45 | - |
 
-![Average Reward Scores](outputs/plots/02_average_reward.png)
+<img src="outputs/plots/02_average_reward.png" alt="Average Reward Scores Plot" width="800" height="400">
+<!-- ![Average Reward Scores](outputs/plots/02_average_reward.png) -->
 
 #### **ROUGE Score Comparison**
 The PPO model maintains strong ROUGE scores, indicating it learned human preferences without suffering from "catastrophic forgetting" of its language capabilities.
@@ -79,7 +80,7 @@ The PPO model maintains strong ROUGE scores, indicating it learned human prefere
 | :--- | :---: | :---: | :---: | :---: |
 | **ROUGE-1** | 0.179 | 0.353 | 0.312 | **0.337** |
 | **ROUGE-2** | 0.049 | 0.149 | 0.126 | **0.139** |
-| **ROUGE-L** | 0.144 | 0.262 | 0.241 | **0.252** |
+| **ROUGE-L** | 0.144 | 0.262 | 0.240 | **0.252** |
 
 ![ROUGE Score Comparison Plot](outputs/plots/03_fullsft_peft_ppo_base_comparison.png)
 
@@ -103,23 +104,23 @@ This diagram illustrates the flow of models and data through the three stages of
 ```mermaid
 graph TD
     subgraph Stage 1: Supervised Fine-Tuning
-        A[Base Model GPT-2] -->|Fine-Tune on Instructions| B(SFT Model);
+        A[Base Model GPT-2] -->|Fine-Tune on Instructions| B(SFT Model)
     end
 
     subgraph Stage 2: Reward Modeling
-        C[Preference Dataset<br>(prompt, chosen, rejected)] --> D{Train Reward Model};
-        B --> D;
-        D --> E(Reward Model);
+        C[Preference Dataset - prompt, chosen, rejected] --> D{Train Reward Model}
+        B --> D
+        D --> E(Reward Model)
     end
 
     subgraph Stage 3: PPO Alignment
-        F(SFT Model as Policy) --> G{Generate Response};
-        E -- Scores Response --> G;
-        G -- Reward Signal --> H(PPO Algorithm);
-        H -- Updates Weights --> F;
+        F(SFT Model as Policy) --> G{Generate Response}
+        E -- Scores Response --> G
+        G -- Reward Signal --> H(PPO Algorithm)
+        H -- Updates Weights --> F
     end
 
-    H --> I[🏆 PPO Aligned Model];
+    H --> I[🏆 PPO Aligned Model]
 ```
 
 ---
@@ -133,30 +134,27 @@ graph TD
 
 #### 1. Clone the Repository
 ```bash
-git clone [https://github.com/your-username/LLM-Alignment-RLHF.git](https://github.com/your-username/LLM-Alignment-RLHF.git)
-cd LLM-Alignment-RLHF
+git clone https://github.com/nabeelshan78/reinforcement-learning-human-feedback-scratch.git
+cd reinforcement-learning-human-feedback-scratch
 ```
 
 ## 2. Set Up the Environment
 It is recommended to use a virtual environment.
 
-### Bash
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+.\venv\Scripts\activate
+
 pip install -r requirements.txt
 ```
 
 ## 3. Using the Pre-Trained Models
 
-For convenience, all final models are available on the **Hugging Face Hub**.  
-You do not need to retrain them to see the results.
+The final trained models from each major stage are available on the **Hugging Face Hub** for direct use and inspection.
 
 - **Final SFT Model (Full)**
 - **Final Reward Model**
 - **Final PPO Aligned Model**
-
-The notebooks are configured to use these models for evaluation.
 
 ---
 
@@ -176,19 +174,36 @@ The notebooks within each folder should be run in order:
 The repository is organized to clearly separate the code for each stage of the RLHF pipeline from the generated outputs.
 
 ```bash
-LLM-Alignment-RLHF/
-├── 01_supervised_finetuning/   # Scripts and notebooks for SFT
-├── 02_reward_modeling/         # Scripts and notebooks for Reward Modeling
-├── 03_ppo_alignment/           # Scripts and notebooks for PPO
+/reinforcement-learning-human-feedback-scratch
+├── 01_supervised_finetuning/    # Notebooks for data prep, PEFT, and Full SFT
+│   ├── 1_data_prep_and_baseline.ipynb
+│   ├── 2_finetune_peft_lora.ipynb
+│   ├── ...
+│   └── prepare_data.py
+├── 02_reward_modeling/          # Notebooks for training the reward model
+│   ├── 01_reward_model_data_prep.ipynb
+│   ├── 02_reward_model_training_and_eval.ipynb
+│   └── data_pipeline.py
+├── 03_ppo_alignment/            # Notebooks for the PPO training loop
+│   ├── ppo_alignment.ipynb
+│   ├── ppo_config.py
+│   └── prepare_data.py
 ├── outputs/
-│   ├── checkpoints/            # (Ignored by git) Where trained models are saved locally
-│   ├── evaluation/             # CSV and JSON files with performance metrics
-│   └── plots/                  # Generated plots and visualizations
-├── requirements.txt
-├── .gitignore                  # Specifies files to ignore (e.g., model checkpoints)
-└── README.md                   # You are here!
+│   ├── checkpoints/             # (Gitignored) Locally saved model checkpoints
+│   ├── evaluation/              # CSV/JSON files with evaluation metrics
+│   └── plots/                   # Generated charts and visualizations
+├── .gitignore
+├── README.md                    # You are here!
+└── requirements.txt
 ```
 
+---
+
+## Future Improvements
+
+- **Scale to a Larger Base Model**: Apply the same pipeline to a more capable model like **Mistral-7B** or **Llama-2-7B** to achieve higher absolute performance.  
+- **Implement Direct Preference Optimization (DPO)**: Explore **DPO** as a more modern, computationally efficient alternative to PPO for the final alignment stage.  
+- **Expand the Reward Dataset**: Incorporate more diverse and challenging preference data to train a more robust reward model.  
 
 ---
 
