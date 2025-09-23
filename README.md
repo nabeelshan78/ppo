@@ -18,11 +18,12 @@ This repository is designed as a comprehensive case study, demonstrating not jus
     * [Quantitative Analysis: Reward & ROUGE Scores](#quantitative-analysis-reward--rouge-scores)
     * [Qualitative Analysis: Model Output Comparison](#qualitative-analysis-model-output-comparison)
 * [**Architecture Diagram**](#architecture-diagram)
-* [**Quickstart**](#getting-started)
-* [**Hugging Face Models**](#hugging-face-models)
-* [**Repository Structure**](#repository-structure)
-* [**Future Improvements**](#future-improvements)
+* [**Getting Started**](#getting-started)
+* [**Project Structure**](#project-structure)
 * [**Technologies & Libraries**](#technologies--libraries)
+* [**Future Improvements**](#future-improvements)
+
+* Project Structure
 
 ---
 
@@ -200,6 +201,15 @@ The repository is organized to clearly separate the code for each stage of the R
 
 ---
 
+## Technologies & Libraries
+
+- **Core ML/RL**: PyTorch, PEFT (Parameter-Efficient Fine-Tuning), TRL (Transformer Reinforcement Learning)  
+- **Hugging Face**: `transformers`, `datasets`, `accelerate`, `bitsandbytes`  
+- **Data Handling**: Pandas, NumPy  
+- **Visualization**: Matplotlib
+
+---
+
 ## Future Improvements
 
 - **Scale to a Larger Base Model**: Apply the same pipeline to a more capable model like **Mistral-7B** or **Llama-2-7B** to achieve higher absolute performance.  
@@ -207,10 +217,3 @@ The repository is organized to clearly separate the code for each stage of the R
 - **Expand the Reward Dataset**: Incorporate more diverse and challenging preference data to train a more robust reward model.  
 
 ---
-
-## Technologies & Libraries
-
-- **Core ML/RL**: PyTorch, PEFT (Parameter-Efficient Fine-Tuning), TRL (Transformer Reinforcement Learning)  
-- **Hugging Face**: `transformers`, `datasets`, `accelerate`, `bitsandbytes`  
-- **Data Handling**: Pandas, NumPy  
-- **Visualization**: Matplotlib  
