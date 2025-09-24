@@ -1,9 +1,12 @@
 # 🚀 End-to-End Reinforcement Learning from Human Feedback (RLHF)
 
+<a href="https://huggingface.co/nabeelshan/rlhf-gpt2-pipeline">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Model%20Repo-nabeelshan/rlhf--gpt2--pipeline-blue" alt="Hugging Face icon">
+</a>
+
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/release/python-380/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=flat&logo=PyTorch&logoColor=white)](https://pytorch.org/)
 [![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-blue)](https://huggingface.co/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 An end-to-end, from-scratch implementation of the complete **Reinforcement Learning from Human Feedback (RLHF)** pipeline. This project aligns a base `gpt2` model with human preferences using the same three-stage process popularized by models like ChatGPT and Claude.
 
@@ -165,25 +168,123 @@ python -m venv venv
 
 pip install -r requirements.txt
 ```
-
-## 3. Using the Pre-Trained Models
-
-The final trained models from each major stage are available on the **Hugging Face Hub** for direct use and inspection.
-
-- **Final SFT Model (Full)**
-- **Final Reward Model**
-- **Final PPO Aligned Model**
-
 ---
 
-## 4. Running the Pipeline
 
-The project is organized into three sequential stages.  
-The notebooks within each folder should be run in order:
+## 3. Using the Pre-Trained Models from Hugging Face Hub
 
-- **`01_supervised_finetuning/`**: Contains notebooks for data prep and SFT experiments.  
-- **`02_reward_modeling/`**: Contains notebooks for preparing reward data and training the RM.  
-- **`03_ppo_alignment/`**: Contains the notebook for the final PPO training loop.  
+The final, trained models from all three stages of the pipeline are available on the Hugging Face Hub. You can use them directly for inference without needing to retrain.
+
+<a href="https://huggingface.co/nabeelshan/rlhf-gpt2-pipeline">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Model%20Repo-nabeelshan/rlhf--gpt2--pipeline-blue" alt="Hugging Face icon">
+</a>
+
+Below are code snippets demonstrating how to use each model.
+
+### a) PPO-Aligned Model (Final Generation Model)
+This is the main, final model, aligned with human preferences. Use this for the best quality text generation.
+
+```python
+from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
+
+model_id = "nabeelshan/rlhf-gpt2-pipeline"
+subfolder = "ppo_aligned_final"
+
+# Load the tokenizer and model from the subfolder
+tokenizer = AutoTokenizer.from_pretrained(model_id, subfolder=subfolder)
+model = AutoModelForCausalLM.from_pretrained(model_id, subfolder=subfolder)
+
+# Set up the text generation pipeline
+generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
+
+# Generate a response
+prompt = "How do I price my artwork?"
+output = generator(prompt, max_new_tokens=100, pad_token_id=tokenizer.eos_token_id)
+
+print(output[0]['generated_text'])
+# Expected Output:
+# To price your art, start by researching the artist and their portfolio...
+```
+
+
+### b) Reward Model (Preference Scoring)
+This model scores how "good" a response is for a given prompt. It's a PEFT adapter, and due to library version inconsistencies, the most robust way to load it is by downloading the files first and then loading them from the local path.
+
+```python
+import torch
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from peft import PeftModel
+from huggingface_hub import snapshot_download
+
+# --- Configuration ---
+BASE_MODEL_ID = "openai-community/gpt2"
+HF_MODEL_ID = "nabeelshan/rlhf-gpt2-pipeline"
+SUBFOLDER = "reward_model_final"
+
+# --- Step 1: Download the model files manually ---
+print(f"Downloading reward model from '{HF_MODEL_ID}'...")
+local_model_path = snapshot_download(
+    repo_id=HF_MODEL_ID,
+    allow_patterns=f"{SUBFOLDER}/*"
+)
+local_adapter_path = f"{local_model_path}/{SUBFOLDER}"
+print(f"   Successfully downloaded to: {local_adapter_path}")
+
+# --- Step 2: Load the model from the local path ---
+print("Loading model from local path...")
+tokenizer = AutoTokenizer.from_pretrained(local_adapter_path)
+if tokenizer.pad_token is None:
+    tokenizer.pad_token = tokenizer.eos_token
+
+base_model = AutoModelForSequenceClassification.from_pretrained(
+    BASE_MODEL_ID,
+    num_labels=1,
+    pad_token_id=tokenizer.pad_token_id
+)
+
+model = PeftModel.from_pretrained(base_model, local_adapter_path)
+model.eval()
+print("   Model loaded successfully!")
+
+# --- Step 3: Use the model for scoring ---
+prompt = "What diet should I follow to lose weight healthily?"
+good_response = "A balanced, nutritious plan is best. Limit processed foods."
+bad_response = "Just eat less lol."
+
+def get_reward_score(prompt_text, response_text):
+    inputs = tokenizer(prompt_text, response_text, return_tensors="pt")
+    with torch.no_grad():
+        return model(**inputs).logits[0].item()
+
+score_good = get_reward_score(prompt, good_response)
+score_bad = get_reward_score(prompt, bad_response)
+
+print(f"\nScore for good response: {score_good:.2f}")
+print(f"Score for bad response:  {score_bad:.2f}")
+```
+
+### c) SFT Model (Instruction-Tuned Baseline)
+This is the base gpt2 model after Supervised Fine-Tuning but before PPO alignment. It follows instructions but is not as refined as the final PPO model.
+
+```python
+from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
+
+model_id = "nabeelshan/rlhf-gpt2-pipeline"
+subfolder = "sft_full_final"
+
+# Load the tokenizer and model from the subfolder
+tokenizer = AutoTokenizer.from_pretrained(model_id, subfolder=subfolder)
+model = AutoModelForCausalLM.from_pretrained(model_id, subfolder=subfolder)
+
+# Set up the text generation pipeline
+generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
+
+# Generate a response
+prompt = "How do I price my artwork?"
+output = generator(prompt, max_new_tokens=100, pad_token_id=tokenizer.eos_token_id)
+
+print(output[0]['generated_text'])
+```
 
 ---
 
