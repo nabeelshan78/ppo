@@ -1,12 +1,10 @@
 # 🚀 End-to-End Reinforcement Learning from Human Feedback (RLHF)
 
-<a href="https://huggingface.co/nabeelshan/rlhf-gpt2-pipeline">
-    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Model%20Repo-nabeelshan/rlhf--gpt2--pipeline-blue" alt="Hugging Face icon">
-</a>
+[![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Model-nabeelshan/rlhf--gpt2--pipeline-blue)](https://huggingface.co/nabeelshan/rlhf-gpt2-pipeline)
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Spaces-Live%20Demo-yellow)](https://huggingface.co/spaces/nabeelshan/Rlhf-Gpt2-Demo)
 
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/release/python-380/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=flat&logo=PyTorch&logoColor=white)](https://pytorch.org/)
-[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-blue)](https://huggingface.co/)
 
 An end-to-end, from-scratch implementation of the complete **Reinforcement Learning from Human Feedback (RLHF)** pipeline. This project aligns a base `gpt2` model with human preferences using the same three-stage process popularized by models like ChatGPT and Claude.
 
@@ -17,6 +15,7 @@ This repository is designed as a comprehensive case study, demonstrating not jus
 ### Table of Contents
 * [**The RLHF Pipeline**](#-the-rlhf-pipeline)
 * [**Key Features**](#-key-features)
+* [**Live Demo**](#-try-the-live-demo)
 * [**Results & Benchmarks**](#-results--benchmarks)
     * [Quantitative Analysis: Reward & ROUGE Scores](#quantitative-analysis-reward--rouge-scores)
     * [Qualitative Analysis: Model Output Comparison](#qualitative-analysis-model-output-comparison)
@@ -53,6 +52,16 @@ While powerful, base Large Language Models (LLMs) often lack the nuance to be co
 * **Quantitative Benchmarking**: Rigorous evaluation at every stage using **ROUGE scores** for text quality and **learned reward scores** for preference alignment.
 * **Modular & Reproducible**: The code is cleanly structured by stage, with clear notebooks and a `requirements.txt` file for easy reproduction.
 * **Clear Visualizations**: Includes plots for training loss, reward model accuracy, and final performance comparisons to make results intuitive.
+
+---
+
+## 🚀 Try the Live Demo
+
+The best way to see the impact of RLHF is to interact with the final model yourself. The PPO-aligned model is hosted on Hugging Face Spaces.
+
+**[➡️ Click here to open the Live Demo](https://huggingface.co/spaces/nabeelshan/Rlhf-Gpt2-Demo)**
+
+Compare its outputs to the base GPT-2 model and see the difference in quality and helpfulness firsthand!
 
 ---
 
@@ -146,20 +155,20 @@ graph TD;
 
 ---
 
-### Getting Started
+## Getting Started
 
-#### Prerequisites
+### Prerequisites
 - Python 3.8+
 - PyTorch & CUDA
 - A Hugging Face account and access token
 
-#### 1. Clone the Repository
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/nabeelshan78/reinforcement-learning-human-feedback-scratch.git
 cd reinforcement-learning-human-feedback-scratch
 ```
 
-## 2. Set Up the Environment
+### 2. Set Up the Environment
 It is recommended to use a virtual environment.
 
 ```bash
@@ -171,9 +180,19 @@ pip install -r requirements.txt
 ---
 
 
-## 3. Using the Pre-Trained Models from Hugging Face Hub
+### 3. Using the Models & Demo from Hugging Face
 
-The final, trained models from all three stages of the pipeline are available on the Hugging Face Hub. You can use them directly for inference without needing to retrain.
+There are two primary ways to use the assets from this project, all hosted on the Hugging Face Hub.
+
+#### Option 1: Interact with the Live Demo (Recommended)
+
+The easiest way to test the final, PPO-aligned model is through the interactive Gradio demo hosted on Hugging Face Spaces. No installation is required.
+
+**[➡️ Open the Rlhf Gpt2 Demo](https://huggingface.co/spaces/nabeelshan/Rlhf-Gpt2-Demo)**
+
+#### Option 2: Run Inference Locally with `transformers`
+
+If you want to integrate the models into your own code, you can download them directly from the Hub. The final, trained models from all three stages of the pipeline are available in the model repository.
 
 <a href="https://huggingface.co/nabeelshan/rlhf-gpt2-pipeline">
     <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Model%20Repo-nabeelshan/rlhf--gpt2--pipeline-blue" alt="Hugging Face icon">
@@ -181,7 +200,7 @@ The final, trained models from all three stages of the pipeline are available on
 
 Below are code snippets demonstrating how to use each model.
 
-### a) PPO-Aligned Model (Final Generation Model)
+#### a) PPO-Aligned Model (Final Generation Model)
 This is the main, final model, aligned with human preferences. Use this for the best quality text generation.
 
 ```python
@@ -207,7 +226,7 @@ print(output[0]['generated_text'])
 ```
 
 
-### b) Reward Model (Preference Scoring)
+#### b) Reward Model (Preference Scoring)
 This model scores how "good" a response is for a given prompt. It's a PEFT adapter, and due to library version inconsistencies, the most robust way to load it is by downloading the files first and then loading them from the local path.
 
 ```python
@@ -263,7 +282,7 @@ print(f"\nScore for good response: {score_good:.2f}")
 print(f"Score for bad response:  {score_bad:.2f}")
 ```
 
-### c) SFT Model (Instruction-Tuned Baseline)
+#### c) SFT Model (Instruction-Tuned Baseline)
 This is the base gpt2 model after Supervised Fine-Tuning but before PPO alignment. It follows instructions but is not as refined as the final PPO model.
 
 ```python
